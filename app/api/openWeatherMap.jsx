@@ -17,7 +17,12 @@ module.exports = {
         }
     }, function (res) {
       console.log('second error case');
-      throw new Error(res.response.statusText);
+      if(typeof res.response.statusText != 'undefined') {
+        throw new Error(res.response.statusText);
+      } else {
+        throw new Error('Unknown error occured.');
+      }
+
     });
   }
 }
