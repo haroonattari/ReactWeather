@@ -24952,7 +24952,14 @@
 
 	    onSearch: function onSearch(e) {
 	        e.preventDefault();
-	        alert('Not yet wired up!');
+
+	        var location = this.refs.search.value;
+	        var encodedLocation = encodeURIComponent(location);
+
+	        if (location.length > 0) {
+	            this.refs.search.value = '';
+	            window.location.hash = '#/?location=' + encodedLocation;
+	        }
 	    },
 	    render: function render() {
 	        return React.createElement(
@@ -25016,7 +25023,7 @@
 	                        React.createElement(
 	                            'li',
 	                            null,
-	                            React.createElement('input', { type: 'search', placeholder: 'Search weather by city' })
+	                            React.createElement('input', { type: 'search', placeholder: 'Search weather by city', ref: 'search' })
 	                        ),
 	                        React.createElement(
 	                            'li',
@@ -25057,7 +25064,9 @@
 
 	    this.setState({
 	      isLoading: true,
-	      errorMessage: undefined
+	      errorMessage: undefined,
+	      location: undefined,
+	      temp: undefined
 	    });
 
 	    openWeatherMap.getTemp(location).then(function (temp) {
@@ -25072,6 +25081,22 @@
 	        errorMessage: e.message
 	      });
 	    });
+	  },
+	  componentDidMount: function componentDidMount() {
+	    var location = this.props.location.query.location;
+
+	    if (location && location.length > 0) {
+	      this.handleSearch(location);
+	      window.location.hash = '#/';
+	    }
+	  },
+	  componentWillReceiveProps: function componentWillReceiveProps(newProps) {
+	    var location = newProps.location.query.location;
+
+	    if (location && location.length > 0) {
+	      this.handleSearch(location);
+	      window.location.hash = '#/';
+	    }
 	  },
 	  render: function render() {
 	    var _state = this.state,
@@ -26779,7 +26804,7 @@
 	    null,
 	    React.createElement(
 	      "h1",
-	      { className: "text-center" },
+	      { className: "text-center page-title" },
 	      "About"
 	    ),
 	    React.createElement(
@@ -26838,7 +26863,7 @@
 	        null,
 	        React.createElement(
 	            'h1',
-	            { className: 'text-center' },
+	            { className: 'text-center page-title' },
 	            'Examples'
 	        ),
 	        React.createElement(
@@ -27248,8 +27273,8 @@
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./app.css", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./app.css");
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/lib/loader.js!./app.scss", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/sass-loader/lib/loader.js!./app.scss");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -27267,7 +27292,7 @@
 
 
 	// module
-	exports.push([module.id, ".page-title {\r\n    margin-top: 2.5rem;\r\n    margin-bottom: 2.5rem;\r\n}\r\n\r\ninput[type=search] {\r\n    box-shadow: none;\r\n}\r\n", ""]);
+	exports.push([module.id, ".page-title {\n  color: purple;\n  margin-top: 2.5rem;\n  margin-bottom: 2.5rem; }\n\ninput[type=search] {\n  box-shadow: none; }\n", ""]);
 
 	// exports
 
